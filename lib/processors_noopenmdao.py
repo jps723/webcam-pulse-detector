@@ -163,7 +163,7 @@ class findFaceGetPulse(object):
         cv2.putText(
             self.frame_out, "Press 'S' to restart",
                    (10, 50), cv2.FONT_HERSHEY_PLAIN, 1.5, col)
-        cv2.putText(self.frame_out, "Press 'D' to toggle data plot",
+        cv2.putText(self.frame_out, "Press 'D' to toggle data plot/send OSC out",
                    (10, 75), cv2.FONT_HERSHEY_PLAIN, 1.5, col)
         cv2.putText(self.frame_out, "Press 'Esc' to quit",
                    (10, 100), cv2.FONT_HERSHEY_PLAIN, 1.5, col)
