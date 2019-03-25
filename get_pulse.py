@@ -10,6 +10,12 @@ import datetime
 import socket
 import sys
 
+"""
+OSC LIBS -- pip install python-osc
+"""
+from pythonosc import osc_message_builder
+from pythonosc import udp_client
+
 class getPulseApp(object):
 
     """
@@ -98,7 +104,7 @@ class getPulseApp(object):
         fn = fn.replace(":", "_").replace(".", "_")
         data = np.vstack((self.processor.times, self.processor.samples)).T
         np.savetxt(fn + ".csv", data, delimiter=',')
-        print("Writing csv")
+        print("Writing csv")  
 
     def toggle_search(self):
         """
@@ -134,7 +140,7 @@ class getPulseApp(object):
         plotXY([[self.processor.times,
                  self.processor.samples],
                 [self.processor.freqs,
-                 self.processor.fft]],
+                 self.processor.fft]], 
                labels=[False, True],
                showmax=[False, "bpm"],
                label_ndigits=[0, 0],
@@ -142,6 +148,8 @@ class getPulseApp(object):
                skip=[3, 3],
                name=self.plot_title,
                bg=self.processor.slices[0])
+        oscData = self.processor.bpm
+        client.send_message("/msg", oscData)
 
     def key_handler(self):
         """
@@ -171,6 +179,7 @@ class getPulseApp(object):
         # Get current image frame from the camera
         frame = self.cameras[self.selected_cam].get_frame()
         self.h, self.w, _c = frame.shape
+        
 
         # display unaltered frame
         # imshow("Original",frame)
@@ -188,6 +197,7 @@ class getPulseApp(object):
         # create and/or update the raw data display if needed
         if self.bpm_plot:
             self.make_bpm_plot()
+            
 
         if self.send_serial:
             self.serial.write(str(self.processor.bpm) + "\r\n")
@@ -206,8 +216,19 @@ if __name__ == "__main__":
                         help='Baud rate for serial transmission')
     parser.add_argument('--udp', default=None,
                         help='udp address:port destination for bpm data')
+    parser.add_argument("--ip", default="127.0.0.1",
+                        help="The ip of the OSC server")
+    parser.add_argument("--port", type=int, default="5005",
+                        help="The port the OSC server is listening on")
+    
 
     args = parser.parse_args()
+    client = udp_client.SimpleUDPClient(args.ip, args.port)
     App = getPulseApp(args)
+
+    
     while True:
         App.main_loop()
+
+
+    
