@@ -19,7 +19,7 @@ This code can also be run from source by following the instructions below.
 A python code that detects the heart-rate of an individual using a common webcam or network IP camera. 
 Tested on OSX, Ubuntu, and Windows.  
 
-### Added Feature: OSC Out whenever data is being plotted
+### **Added Feature: OSC Out whenever data is being plotted**
 
 How it works:
 -----------------
